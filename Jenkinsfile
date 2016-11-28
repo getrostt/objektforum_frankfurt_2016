@@ -10,15 +10,6 @@ def deployScriptPath = '../OFS@script/deploy.groovy'
 
 stage('Commit') {
     node {
-        // setup JDK
-        env.JAVA_HOME = "${tool 'JDK_1.8'}"
-        env.PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
-
-        // setup maven
-        def mvnHome = tool name: mvnToolName
-
-        sh "ls -al /var/jenkins_home/tools/hudson.model.JDK/JDK_1.8/bin"
-
         // checkout sources
         git url: gitUrl, branch: '10.x'
 
@@ -27,7 +18,9 @@ stage('Commit') {
           // run maven build
           // -Dmaven.test.failure.ignore=true -> do not fail the maven build due to test errors
           //                                  -> this will be done by the junit step (causing the build to become yellow)
-          sh "${mvnHome}/bin/mvn clean install -Dmaven.test.failure.ignore=true"
+          withMaven(jdk: 'JDK_1.8', maven: 'maven-3.2', mavenLocalRepo: '', mavenOpts: '', mavenSettingsFilePath: '') {
+              sh "mvn clean install -Dmaven.test.failure.ignore=true"
+          }
 
           // publish JUnit test results
           // allowEmptyResults -> do not fail the build if we have no tests
