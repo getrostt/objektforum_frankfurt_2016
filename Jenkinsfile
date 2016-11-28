@@ -19,6 +19,9 @@ stage('Commit') {
           // -Dmaven.test.failure.ignore=true -> do not fail the maven build due to test errors
           //                                  -> this will be done by the junit step (causing the build to become yellow)
           withMaven(jdk: 'JDK_1.8', maven: 'maven-3.3') {
+              sh "ls -al /var/jenkins_home/tools/hudson.model.JDK/JDK_1.8/bin"
+              sh "ls -al /var/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/maven-3.3/bin"
+              sh "mvn --version"
               sh "mvn clean install -Dmaven.test.failure.ignore=true"
           }
 
