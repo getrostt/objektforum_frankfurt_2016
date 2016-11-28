@@ -6,7 +6,7 @@
 def mvnToolName = 'maven-3.2'
 def gitUrl = 'https://github.com/wildfly/quickstart.git'
 def junitTestReports = '**/target/surefire-t/TEST-*.xml'
-def deployScriptPath = '../OFS@script/deploy.groovy'
+def deployScriptPath = '../Demo1@script/deploy.groovy'
 
 properties([
   buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '3')),
