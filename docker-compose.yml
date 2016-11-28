@@ -1,7 +1,7 @@
 version: "2"
 services:
   jenkins:
-    image: jenkins:2.19.3-alpine
+    image: jenkins:2.19.3
     dns:
       - 8.8.8.8
     ports:
