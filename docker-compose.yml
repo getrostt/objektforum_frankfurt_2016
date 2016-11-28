@@ -9,6 +9,7 @@ services:
       - 50000:50000
     volumes:
       - ./jenkins_home:/var/jenkins_home
+      - .:/git/objektforum_frankfurt_2016
       - /var/run:/var/run:rw
       - /var/run/docker.sock:/var/run/docker.sock
 
