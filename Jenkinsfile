@@ -17,6 +17,8 @@ stage('Commit') {
         // setup maven
         def mvnHome = tool name: mvnToolName
 
+        sh "ls -al /var/jenkins_home/tools/hudson.model.JDK/JDK_1.8/bin"
+
         // checkout sources
         git url: gitUrl, branch: '10.x'
 
