@@ -8,6 +8,10 @@ def gitUrl = 'https://github.com/wildfly/quickstart.git'
 def junitTestReports = '**/target/surefire-t/TEST-*.xml'
 def deployScriptPath = '../OFS@script/deploy.groovy'
 
+properties([
+  buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '3')),
+])
+
 stage('Commit') {
     node {
         // checkout sources
