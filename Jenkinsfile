@@ -18,7 +18,7 @@ stage('Commit') {
           // run maven build
           // -Dmaven.test.failure.ignore=true -> do not fail the maven build due to test errors
           //                                  -> this will be done by the junit step (causing the build to become yellow)
-          withMaven(jdk: 'JDK_1.8', maven: 'maven-3.2', mavenLocalRepo: '', mavenOpts: '', mavenSettingsFilePath: '') {
+          withMaven(jdk: 'JDK_1.8', maven: 'maven-3.3') {
               sh "mvn clean install -Dmaven.test.failure.ignore=true"
           }
 
