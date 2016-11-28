@@ -3,7 +3,7 @@ import groovy.json.JsonSlurper
 def deploy(deploymentFileName) {
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'wildFlyManagementCredentials', passwordVariable: 'wildflyMgmtPassword', usernameVariable: 'wildflyMgmtUser']]) {
         def hostname = 'localhost'
-        def managementPort = '10090'
+        def managementPort = '9990'
 
         def deploymentNameWoPath = determineFileName(deploymentFileName)
         echo "Name: ${deploymentNameWoPath}"
