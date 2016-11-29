@@ -28,7 +28,27 @@ stage('Commit') {
 
             junit allowEmptyResults: true, testResults: junitTestReports
             archive(includes: '**/*.war')
+            stash(name: 'off', includes:  '**/*.war')
         }
     }
+}
+
+stage('Deploy') {
+    node {
+        unstash(name: 'off')
+        def files2Deploy = findFiles(glob: '**/*kitchensink.war')
+        def deployScript = load(deployScriptPath)
+        deployScript.deploy(files2Deploy[0].path)
+    }
+}
+def branches = [:]
+branches['UX Tests'] = {
+    input('UX Tests successfull?')
+}
+branches['Pentests'] = {
+    input('Sucessfull?')
+}
+stage('ManTests') {
+    parallel branches
 }
 
