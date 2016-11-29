@@ -2,8 +2,6 @@ version: "2"
 services:
   jenkins:
     image: jenkins:2.19.3
-    dns:
-      - 8.8.8.8
     ports:
       - 8080:8080
       - 50000:50000
@@ -12,6 +10,8 @@ services:
       - .:/git/objektforum_frankfurt_2016
       - /var/run:/var/run:rw
       - /var/run/docker.sock:/var/run/docker.sock
+    links:
+      - 'wildfly:wildfly'
 
   portainer:
     image: portainer/portainer
@@ -19,3 +19,14 @@ services:
       - 9000:9000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    links:
+      - 'wildfly:wildfly'
+      - 'jenkins:jenkins'
+
+  wildfly:
+    build:
+      context: ./docker-wildfly
+    image: getrostt/wildfly:10.1.0.Final
+    ports:
+      - 8180:8080
+      - 9990:9990
