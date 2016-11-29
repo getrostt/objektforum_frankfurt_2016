@@ -9,7 +9,7 @@ properties([
 stage('Stage') {
     def bc = docker.image(mvnImgDocker)
     bc.inside {
-        git url: gitUrl, branch: '10.X'
+        git url: gitUrl, branch: '10.x'
         sh 'cd kitchensink && mvn clean install'
     }
 }
