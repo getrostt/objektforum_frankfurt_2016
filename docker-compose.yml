@@ -8,6 +8,7 @@ services:
     volumes:
       - ./jenkins_home:/var/jenkins_home
       - .:/git/objektforum_frankfurt_2016
+      - /home/toge/git/wildfly-quickstarts:/git/wildfly-quickstarts
       - /var/run:/var/run:rw
       - /var/run/docker.sock:/var/run/docker.sock
     links:

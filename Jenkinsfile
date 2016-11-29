@@ -4,7 +4,8 @@
 
 // global pipeline settings to avoid typos during live coding
 def mvnToolName = 'maven-3.2'
-def gitUrl = 'https://github.com/wildfly/quickstart.git'
+// def gitUrl = 'https://github.com/wildfly/quickstart.git'
+def gitUrl = '/git/wildfly-quickstarts/.git'
 def junitTestReports = '**/target/surefire-t/TEST-*.xml'
 def deployScriptPath = '../Demo1@script/deploy.groovy'
 
