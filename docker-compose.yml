@@ -1,7 +1,9 @@
 version: "2"
 services:
   jenkins:
-    image: jenkins:2.19.3
+    build:
+      context: ./docker-jenkins
+    image: getrostt/jenkins:2.34.0
     ports:
       - 8080:8080
       - 50000:50000
