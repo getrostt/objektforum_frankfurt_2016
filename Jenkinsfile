@@ -46,7 +46,7 @@ stage('autoTest') {
         unstash(name: 'ofs')
 
         // find the files to deploy and deploy them using the provided script
-        def deployables = findFiles(glob: '**/*.war')
+        def deployables = findFiles(glob: '**/wildfly-kitchensink.war')
         def deployScript = load(deployScriptPath)
         deployScript.deploy(deployables[0].path)
     }
