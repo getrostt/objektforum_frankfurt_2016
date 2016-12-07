@@ -6,49 +6,66 @@
 def jdkName = 'JDK_1.8'
 def mvnToolName = 'maven-3.3'
 def localMavenRepoPath = '/var/jenkins_home/.m2/repository'
-// withMaven(jdk: 'JDK_1.8', maven: 'maven-3.3', mavenLocalRepo: '/var/jenkins_home/.m2/repository') {
-// def gitUrl = 'https://github.com/wildfly/quickstart.git'
-def gitUrl = '/git/wildfly-quickstarts/.git'
-def gitBranch = '10.x'
+def gitUrl = 'https://github.com/wildfly/quickstart.git'
 def junitTestReports = '**/target/surefire-t/TEST-*.xml'
 def deployScriptPath = '../Demo1@script/deploy.groovy'
 
 properties([
-  buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '3')),
+        buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '3')),
 ])
 
 stage('Commit') {
     node {
-        git url: gitUrl, branch: gitBranch
+        // checkout sources
+        git url: gitUrl, branch: '10.x'
 
+        // change directory to module kitchensink
         dir('kitchensink') {
-            withMaven(jdk: jdkName, maven: mvnToolName, mavenLocalRepo: localMavenRepoPath) {
-                sh 'mvn  clean install'
+            // run maven build
+            // -Dmaven.test.failure.ignore=true -> do not fail the maven build due to test errors
+            //                                  -> this will be done by the junit step (causing the build to become yellow)
+            withMaven(jdk: 'JDK_1.8', maven: 'maven-3.3', mavenLocalRepo: '/var/jenkins_home/.m2/repository') {
+                sh "mvn clean install -Dmaven.test.failure.ignore=true"
             }
 
-            junit allowEmptyResults: true, testResults: junitTestReports
+            // publish JUnit test results
+            // allowEmptyResults -> do not fail the build if we have no tests
+            //                   -> this flag is required as the demo project does not have simple unit tests
+            junit(allowEmptyResults: true, testResults: junitTestReports)
+
+            // archive the WAR file
             archive(includes: '**/*.war')
-            stash(name: 'off', includes:  '**/*.war')
+
+            // store the war file for later use in the pipeline
+            stash name: 'ofs', includes: '**/*.war'
         }
     }
 }
 
-stage('Deploy') {
+stage('autoTest') {
     node {
-        unstash(name: 'off')
-        def files2Deploy = findFiles(glob: '**/*kitchensink.war')
+        // restore the war file for deployment
+        unstash(name: 'ofs')
+
+        // find the files to deploy and deploy them using the provided script
+        def deployables = findFiles(glob: '**/wildfly-kitchensink.war')
         def deployScript = load(deployScriptPath)
-        deployScript.deploy(files2Deploy[0].path)
+        deployScript.deploy(deployables[0].path)
     }
 }
-def branches = [:]
-branches['UX Tests'] = {
-    input('UX Tests successfull?')
-}
-branches['Pentests'] = {
-    input('Sucessfull?')
-}
-stage('ManTests') {
-    parallel branches
-}
 
+// create parallel executions
+def branches = [:]
+branches['manTest']  = {
+    node{
+        input(message: 'Sind die Tests OK?')
+    }
+}
+branches['UX TEsts'] = {
+    node {
+        input message: 'UX Tests OK?'
+    }
+}
+stage('man and UX Tests') {
+    parallel(branches)
+}

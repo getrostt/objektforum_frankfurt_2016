@@ -9,22 +9,10 @@ services:
       - 50000:50000
     volumes:
       - ./jenkins_home:/var/jenkins_home
-      - .:/git/objektforum_frankfurt_2016
-      - /home/toge/git/wildfly-quickstarts:/git/wildfly-quickstarts
       - /var/run:/var/run:rw
       - /var/run/docker.sock:/var/run/docker.sock
     links:
       - 'wildfly:wildfly'
-
-  portainer:
-    image: portainer/portainer
-    ports:
-      - 9000:9000
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    links:
-      - 'wildfly:wildfly'
-      - 'jenkins:jenkins'
 
   wildfly:
     build:
